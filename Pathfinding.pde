@@ -33,14 +33,14 @@ void draw() {
 void keyPressed() {
   int number = ( int )key - 49;
   
-  if ( !ui.selectingWeight && number >= 0 && number <= 2 ) {
+  if ( !ui.selectingWeight && number >= 0 && number <= 4 ) {
     ui.currentTool = number;
   }
   
   if (keyCode == 87 && !ui.selectingWeight) ui.showWeights = !ui.showWeights;
   
-  if (keyCode == 76) loadData();
-  if (keyCode == 83) saveData();
+  else if (keyCode == 76) loadData();
+  else if (keyCode == 83) saveData();
   
   ui.keyPressed( (int)key );
   
@@ -48,6 +48,10 @@ void keyPressed() {
 }
 
 void mouseClicked() {
+  ui.mouseClicked();
+}
+
+void mouseDragged() {
   ui.mouseClicked();
 }
 

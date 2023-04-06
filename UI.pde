@@ -1,6 +1,6 @@
 class UI {
   int currentTool = 0;
-  Node selectedNode;
+  Node selectedNode, sourceNode, targetNode;
   int buttonHeight = 100;
   int buttonWidth = 200;
   boolean showWeights = true;
@@ -8,15 +8,20 @@ class UI {
   String currentWeight = "1";
   boolean selectingWeight;
   float borderRadius = 10;
+  int selectedAlgorithm = 0;
   
   void show() {
     noStroke();
     
     fill(200);
-    rect(0, 0, buttonWidth, buttonHeight * 3);
+    rect(0, 0, buttonWidth, buttonHeight * 5);
+    rect(width - buttonWidth, height - buttonHeight * 1, buttonWidth, buttonHeight * 1);
     
     fill(100);
-    if (!selectingWeight) rect(0, currentTool * buttonHeight, buttonWidth, buttonHeight);
+    if (!selectingWeight) {
+      rect(0, currentTool * buttonHeight, buttonWidth, buttonHeight);
+      rect(width - buttonWidth, height - selectedAlgorithm * buttonHeight - buttonHeight, buttonWidth, buttonHeight);
+    }
     
     textAlign(CENTER, CENTER);
     fill(255);
@@ -24,6 +29,10 @@ class UI {
     text("Select Node", buttonWidth * 0.5f, buttonHeight * 0 + buttonHeight * 0.5f);
     text("Create Path", buttonWidth * 0.5f, buttonHeight * 1 + buttonHeight * 0.5f);
     text("Create Node", buttonWidth * 0.5f, buttonHeight * 2 + buttonHeight * 0.5f);
+    text("Select Source Node", buttonWidth * 0.5f, buttonHeight * 3 + buttonHeight * 0.5f);
+    text("Select Target Node", buttonWidth * 0.5f, buttonHeight * 4 + buttonHeight * 0.5f);
+    
+    text("Dijkastra Source-Target", width - buttonWidth * 0.5f, height - buttonHeight * 0 - buttonHeight * 0.5f);
     
     // Weights
     String text = "Weight: ON";
@@ -56,28 +65,35 @@ class UI {
   }
   
   void mouseClicked() {
-    int nearestNode = nearNode();
     
-    if (nearestNode != -1) {
-      if ( currentTool == 0 ) {
-        selectedNode = nodes.get( nearestNode );
+    if (mouseX < width - buttonWidth) {
+      int nearestNode = nearNode();
+      if (nearestNode != -1 && !selectingWeight) {
+        if ( currentTool == 0 ) selectedNode = nodes.get( nearestNode );
+        
+        else if ( currentTool == 1 && nodes.get( nearestNode ) != selectedNode ) {
+          
+          // WARNING: CHECK WHETHER THERE IS NO SELECTED NODE
+          if ( !selectedNode.hasNeighbour(nodes.get(nearestNode)) ) {    
+            if ( ui.showWeights ) selectingWeight = true;
+            paths.add( new Path(selectedNode, nodes.get( nearestNode ), 1f) );
+            selectedNode.neighbours.add( paths.get(paths.size() - 1) );
+            nodes.get( nearestNode ).neighbours.add( paths.get(paths.size() - 1) );
+          }
+        }
+        
+        else if ( currentTool == 3 ) sourceNode = nodes.get( nearestNode );
+        else if ( currentTool == 4 ) targetNode = nodes.get( nearestNode );
       }
       
-      if ( currentTool == 1 && nodes.get( nearestNode ) != selectedNode ) {
-        
-        // WARNING: CHECK WHETHER THERE IS NO SELECTED NODE
-        if ( !selectedNode.hasNeighbour(nodes.get(nearestNode)) ) {    
-          if ( ui.showWeights ) selectingWeight = true;
-          paths.add( new Path(selectedNode, nodes.get( nearestNode ), 1f) );
-          selectedNode.neighbours.add( paths.get(paths.size() - 1) );
-          nodes.get( nearestNode ).neighbours.add( paths.get(paths.size() - 1) );
-        }
+      else if ( currentTool == 2 && mouseX >= buttonWidth && mouseX <= width - buttonWidth) {
+        nodes.add( new Node( nodes.size() + 1, mouseX, mouseY) );
+        if ( nodes.size() == 1 ) this.selectedNode = nodes.get( 0 );
       }
     }
     
-    else if ( currentTool == 2) {
-      nodes.add( new Node( nodes.size() + 1, mouseX, mouseY) );
-      if ( nodes.size() == 1 ) this.selectedNode = nodes.get( 0 );
+    else {
+      selectedAlgorithm = floor( (height - mouseY) / buttonHeight );
     }
   }
   

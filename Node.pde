@@ -12,14 +12,30 @@ class Node {
   
   void show() {
     
-    // Node
+    // Node    
+    noStroke();
+    fill(nodeColor);
+    circle(position.x, position.y, width / 20);
+    noFill();
+    
+    if ( ui.sourceNode == this ) {
+      stroke(0, 255, 0);
+      strokeWeight(8);
+      circle(position.x, position.y, width / 20);
+    }
+    
+    if ( ui.targetNode == this ) {
+      stroke(255, 0, 0);
+      strokeWeight(8);
+      circle(position.x, position.y, width / 20);
+    }
+    
     if ( ui.selectedNode == this ) {
       stroke(255, 255, 0);
       strokeWeight(5);
+      circle(position.x, position.y, width / 20);
     }
-    else noStroke();
-    fill(nodeColor);
-    circle(position.x, position.y, width / 20);
+    
     
     // Text
     textSize( 20 );
