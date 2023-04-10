@@ -6,6 +6,13 @@ ArrayList<Path> paths = new ArrayList<Path>();
 ArrayList<Warning> warnings = new ArrayList<Warning>();
 UI ui = new UI();
 
+// For the pathfinding itself
+ArrayList<Path[]> possiblePaths = new ArrayList<Path[]>();
+float[] possiblePathLengths;
+
+// For drawing the path
+Path[] selectedPath = new Path[0];
+
 void setup() {
   fullScreen();
   textAlign(CENTER, CENTER);
@@ -28,6 +35,9 @@ void draw() {
     if ( warnings.get(i).done ) warnings.remove( i );
     else warnings.get(i).show();
   }
+  
+  sortPaths();
+  if (ui.currentPath >= 0 && ui.currentPath < possiblePaths.size() - 1) selectedPath = possiblePaths.get(ui.currentPath);
 }
 
 void keyPressed() {
@@ -42,7 +52,7 @@ void keyPressed() {
   else if (keyCode == 76) loadData();
   else if (keyCode == 83) saveData();
   
-  ui.keyPressed( (int)key );
+  ui.keyPressed( (int)key, (int)keyCode );
   
   //println(keyCode);
 }
@@ -117,5 +127,37 @@ void saveData() {
   saveStrings("data.txt", strings);
 }
 
+float calculateDistance(Path[] paths) {
+  float distance = 0f;
+  
+  for (int i = 0; i < paths.length; i++) {
+    distance += paths[i].weight;
+  }
+  
+  return distance;
+}
+
+void sortPaths() {
+  boolean sorted = true;
+  
+  for (int i = 0; i < possiblePaths.size() - 1; i++) {
+    if (possiblePathLengths[i] > possiblePathLengths[i+1]) {
+      sorted = false;
+      
+      // Flip both the path lengths and the paths themselves
+      float copy = possiblePathLengths[i];
+      possiblePathLengths[i] = possiblePathLengths[i+1];
+      possiblePathLengths[i+1] = copy;
+      
+      Path[] pathCopy = possiblePaths.get(i);
+      possiblePaths.set(i, possiblePaths.get((i+1)));
+      possiblePaths.set(i+1, pathCopy);
+    }
+  }
+  
+  if (!sorted) sortPaths();
+}
+
 // TBM
 // No selected node if you load nodes
+// WARNING LOADING AFTER PATH IS FOUND WILL BUG COMPLETELY

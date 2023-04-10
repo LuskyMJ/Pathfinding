@@ -9,6 +9,7 @@ class UI {
   boolean selectingWeight;
   float borderRadius = 10;
   int selectedAlgorithm = 0;
+  int currentPath = 0; // WARNING DO NOT CHANGE THIS IF THERE ISN'T ANY PATHS
   
   void show() {
     noStroke();
@@ -60,7 +61,12 @@ class UI {
       rect(width / 2 - buttonWidth / 2, height / 2 - buttonHeight / 2, buttonWidth, buttonHeight, borderRadius);
       fill(255);
       text(currentWeight, width / 2, height / 2);
-
+    }
+    
+    // Showing which path is selected
+    if (possiblePaths.size() >= 1) {
+      text("Path: " + (currentPath + 1) + "/" + possiblePaths.size(), width / 2, 10);
+      text("Length: " + possiblePathLengths[currentPath], width / 2, 30);
     }
   }
   
@@ -97,11 +103,21 @@ class UI {
     }
   }
   
-  void keyPressed(int pressed) {
+  // WARNING USE EITHER KEY (PRESSED) OR KEYCODE (ALTPRESSED)
+  void keyPressed(int pressed, int altPressed) {
+    
+    // key
     // 8 = delete
     // 10 = enter
     // 46 = dot
+    // 114 = r
+    
+    // keyCode
+    // 38 = up
+    // 40 = down
+    
     int number = pressed - 48;
+    //println(altPressed);
     
     if (selectingWeight) {
       if ( number >= 0 && number <= 9 ) {
@@ -123,6 +139,27 @@ class UI {
           currentWeight += ".";
         }
       }
+    }
+    
+    // WARNING CHECK WHETHER THERE IS SOURCE AND? TARGET NODE + CHECK WHICH FUNCTION TO RUN
+    else if (pressed == 114) {
+      currentPath = 0;1
+      possiblePaths.clear();
+      possiblePathLengths = new float[0];
+      sourceNode.shortestSourceTarget(new ArrayList<Node>(), new ArrayList<Path>());
+      
+      possiblePathLengths = new float[possiblePaths.size()];
+      for (int i = 0; i < possiblePaths.size(); i++) {
+        possiblePathLengths[i] = calculateDistance(possiblePaths.get(i));
+      }
+    }
+    
+    // WARNING CHECK WHETHER THERE IS A PATH
+    if (altPressed == 38) {
+      if (currentPath <possiblePaths.size() - 1) currentPath++;
+    }
+    else if (altPressed == 40) {
+      if (currentPath > 0) currentPath--;
     }
   }
 }

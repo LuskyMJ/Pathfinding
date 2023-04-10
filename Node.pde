@@ -50,4 +50,60 @@ class Node {
     
     return false;
   }
+  
+  void shortestSourceTarget(ArrayList<Node> checkedNodes, ArrayList<Path> paths) {
+    //println("Running function in node: " + key);
+    //println(paths);
+    
+    // Copying
+    ArrayList<Node> checkedNodesCopy = new ArrayList<Node>();
+    for (int i = 0; i < checkedNodes.size(); i++) {
+      checkedNodesCopy.add(checkedNodes.get(i));
+    }
+    
+    // WARNING THIS COULD BE INTEGRATED WITH THE LOOP ABOVE
+    for (int i = 0; i < checkedNodesCopy.size(); i++) {
+      if (checkedNodesCopy.get(i) == this) return;
+    }
+    
+    checkedNodesCopy.add(this);
+    
+    for (int i = 0; i < neighbours.size(); i++) {
+      Path path = neighbours.get(i);
+      Node neighbour;
+      
+      if (path.first == this) neighbour = path.second;
+      else neighbour = path.first;
+      
+      
+      // Checking whether neighbour has already been checked
+      boolean skipNeighbour = false;
+      for (int j = 0; j < checkedNodesCopy.size(); j++) {
+        if (checkedNodesCopy.get(j) == neighbour) skipNeighbour = true;
+      }
+      
+      if (!skipNeighbour) {
+        // WARNING MAYBE MOVE THIS
+        ArrayList<Path> pathsCopy = new ArrayList<Path>();
+        for (int j = 0; j < paths.size(); j++) {
+          pathsCopy.add(paths.get(j));
+        }
+        pathsCopy.add(path);
+        
+        if (neighbour == ui.targetNode) {
+          
+          // Converting Arraylist to array
+          Path[] possiblePath = new Path[pathsCopy.size()];
+          for (int j = 0; j < pathsCopy.size(); j++) {
+            possiblePath[j] = pathsCopy.get(j);
+          }
+          
+          possiblePaths.add(possiblePath);
+        }
+        
+        // The neighbour is not the target and has not been checked. Run the function recursively for that neighbour
+        else neighbour.shortestSourceTarget(checkedNodesCopy, pathsCopy);
+      }
+    }
+  }
 }
