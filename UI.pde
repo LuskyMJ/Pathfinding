@@ -143,7 +143,7 @@ class UI {
     
     // WARNING CHECK WHETHER THERE IS SOURCE AND? TARGET NODE + CHECK WHICH FUNCTION TO RUN
     else if (pressed == 114) {
-      currentPath = 0;1
+      currentPath = 0;
       possiblePaths.clear();
       possiblePathLengths = new float[0];
       sourceNode.shortestSourceTarget(new ArrayList<Node>(), new ArrayList<Path>());

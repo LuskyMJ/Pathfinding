@@ -24,18 +24,18 @@ class Node {
       circle(position.x, position.y, width / 20);
     }
     
-    if ( ui.targetNode == this ) {
+    else if ( ui.targetNode == this ) {
       stroke(255, 0, 0);
       strokeWeight(8);
       circle(position.x, position.y, width / 20);
     }
     
+    // If statement because it needs to run
     if ( ui.selectedNode == this ) {
       stroke(255, 255, 0);
       strokeWeight(5);
       circle(position.x, position.y, width / 20);
     }
-    
     
     // Text
     textSize( 20 );
@@ -44,16 +44,11 @@ class Node {
   }
   
   boolean hasNeighbour( Node otherNode ) {
-    for (int i = 0; i < neighbours.size(); i++) {
-      if ( (neighbours.get( i ).first == otherNode) || (neighbours.get(i).second == otherNode) ) return true;
-    }
-    
+    for (int i = 0; i < neighbours.size(); i++) if ( (neighbours.get( i ).first == otherNode) || (neighbours.get(i).second == otherNode) ) return true;
     return false;
   }
   
   void shortestSourceTarget(ArrayList<Node> checkedNodes, ArrayList<Path> paths) {
-    //println("Running function in node: " + key);
-    //println(paths);
     
     // Copying
     ArrayList<Node> checkedNodesCopy = new ArrayList<Node>();
@@ -75,7 +70,6 @@ class Node {
       if (path.first == this) neighbour = path.second;
       else neighbour = path.first;
       
-      
       // Checking whether neighbour has already been checked
       boolean skipNeighbour = false;
       for (int j = 0; j < checkedNodesCopy.size(); j++) {
@@ -83,7 +77,7 @@ class Node {
       }
       
       if (!skipNeighbour) {
-        // WARNING MAYBE MOVE THIS
+        
         ArrayList<Path> pathsCopy = new ArrayList<Path>();
         for (int j = 0; j < paths.size(); j++) {
           pathsCopy.add(paths.get(j));
