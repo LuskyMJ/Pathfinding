@@ -16,7 +16,7 @@ class UI {
     
     fill(200);
     rect(0, 0, buttonWidth, buttonHeight * 5);
-    rect(width - buttonWidth, height - buttonHeight * 1, buttonWidth, buttonHeight * 1);
+    rect(width - buttonWidth, height - buttonHeight * 2, buttonWidth, buttonHeight * 2);
     
     fill(100);
     if (!selectingWeight) {
@@ -34,6 +34,7 @@ class UI {
     text("Select Target Node", buttonWidth * 0.5f, buttonHeight * 4 + buttonHeight * 0.5f);
     
     text("Dijkastra Source-Target", width - buttonWidth * 0.5f, height - buttonHeight * 0 - buttonHeight * 0.5f);
+    text("Dijkastra Single-Source", width - buttonWidth * 0.5f, height - buttonHeight * 0 - buttonHeight * 1.5f);
     
     // Weights
     String text = "Weight: ON";
@@ -145,18 +146,37 @@ class UI {
     else if (pressed == 114) {
       currentPath = 0;
       possiblePaths.clear();
-      possiblePathLengths = new float[0];
-      sourceNode.shortestSourceTarget(new ArrayList<Node>(), new ArrayList<Path>());
       
-      possiblePathLengths = new float[possiblePaths.size()];
-      for (int i = 0; i < possiblePaths.size(); i++) {
-        possiblePathLengths[i] = calculateDistance(possiblePaths.get(i));
+      // Source-target algorithm
+      if (selectedAlgorithm == 0) {
+        sourceNode.shortestSourceTarget(targetNode, new ArrayList<Node>(), new ArrayList<Path>());
+        fillPossiblePathLengths();
+        sortPaths();
       }
+      
+      // Single-source alogrithm
+      else if (selectedAlgorithm == 1) {
+        ArrayList<Path[]> tempPossiblePaths = new ArrayList<Path[]>(); // WARNING COULD JUST BE A NORMAL ARRAY
+        
+        for (Node node : nodes) {
+          if (node != sourceNode) {
+            possiblePaths.clear();
+            sourceNode.shortestSourceTarget(node, new ArrayList<Node>() {}, new ArrayList<Path>());
+            possiblePathLengths = new float[possiblePaths.size()];
+            fillPossiblePathLengths();
+            sortPaths();
+            tempPossiblePaths.add(possiblePaths.get(0));
+          }
+        }
+        possiblePaths = tempPossiblePaths;
+        fillPossiblePathLengths();
+      }
+      
     }
     
     // WARNING CHECK WHETHER THERE IS A PATH
     if (altPressed == 38) {
-      if (currentPath <possiblePaths.size() - 1) currentPath++;
+      if (currentPath < possiblePaths.size() - 1) currentPath++;
     }
     else if (altPressed == 40) {
       if (currentPath > 0) currentPath--;

@@ -48,7 +48,7 @@ class Node {
     return false;
   }
   
-  void shortestSourceTarget(ArrayList<Node> checkedNodes, ArrayList<Path> paths) {
+  void shortestSourceTarget(Node target, ArrayList<Node> checkedNodes, ArrayList<Path> paths) {
     
     // Copying
     ArrayList<Node> checkedNodesCopy = new ArrayList<Node>();
@@ -84,7 +84,7 @@ class Node {
         }
         pathsCopy.add(path);
         
-        if (neighbour == ui.targetNode) {
+        if (neighbour == target) {
           
           // Converting Arraylist to array
           Path[] possiblePath = new Path[pathsCopy.size()];
@@ -96,8 +96,12 @@ class Node {
         }
         
         // The neighbour is not the target and has not been checked. Run the function recursively for that neighbour
-        else neighbour.shortestSourceTarget(checkedNodesCopy, pathsCopy);
+        else neighbour.shortestSourceTarget(target, checkedNodesCopy, pathsCopy);
       }
     }
+  }
+  
+  String toString() {
+    return str(key);
   }
 }

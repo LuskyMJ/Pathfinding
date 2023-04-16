@@ -21,23 +21,26 @@ void setup() {
 void draw() {
   background(180);
   
-  for (int i = 0; i < paths.size(); i++) {
-    paths.get(i).show();
-  }
- 
-  for (int i = 0; i < nodes.size(); i++) {
-    nodes.get(i).show();
-  }
-  
+  // Drawing nodes, paths & ui
+  for (int i = 0; i < paths.size(); i++) paths.get(i).show();
+  for (int i = 0; i < nodes.size(); i++) nodes.get(i).show();
   ui.show();
- 
+  
+  // Drawing warnings
+  int removed = 0;
   for (int i = 0; i < warnings.size(); i++) {
-    if ( warnings.get(i).done ) warnings.remove( i );
+    int index = i - removed;
+    if (index == warnings.size() - 1) break;
+    if ( warnings.get(index).done ) {
+      warnings.remove(index);
+      removed++;
+    }
+    
     else warnings.get(i).show();
   }
-  
-  sortPaths();
-  if (ui.currentPath >= 0 && ui.currentPath < possiblePaths.size() - 1) selectedPath = possiblePaths.get(ui.currentPath);
+ 
+  // WARNING MOVE THIS SOMEWHERE ELSE
+  if (ui.currentPath >= 0 && ui.currentPath < possiblePaths.size()) selectedPath = possiblePaths.get(ui.currentPath);
 }
 
 void keyPressed() {
@@ -84,6 +87,7 @@ int nearNode() {
 void loadData() {
   nodes.clear();
   paths.clear();
+  possiblePaths.clear();
   String[] strings = loadStrings("data.txt");
   int nodeAmount = int(split(strings[0], " ")[0]);
   int pathAmount = int(split(strings[0], " ")[1]);
@@ -156,6 +160,20 @@ void sortPaths() {
   }
   
   if (!sorted) sortPaths();
+}
+
+void fillPossiblePathLengths() {
+  possiblePathLengths = new float[possiblePaths.size()];
+  for (int i = 0; i < possiblePaths.size(); i++) {
+    possiblePathLengths[i] = calculateDistance(possiblePaths.get(i));
+  }
+}
+
+void printPath(Path[] path) {
+  for (Path connect : path) {
+    print(connect + " ");
+  }
+  println();
 }
 
 // TBM

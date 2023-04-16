@@ -13,9 +13,9 @@ class Path {
   void show() {
     stroke( lineColor );
     
-    boolean pathSelected = false;
+    
     for (Path path : selectedPath) {
-      if (!pathSelected && path == this) stroke( selectedLineColor );
+      if (path == this) stroke( selectedLineColor );
     }
     
     
