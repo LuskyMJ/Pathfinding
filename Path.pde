@@ -13,13 +13,12 @@ class Path {
   void show() {
     stroke( lineColor );
     
-    
     for (Path path : selectedPath) {
       if (path == this) stroke( selectedLineColor );
     }
     
-    
-    strokeWeight( 10 );
+    strokeWeight(10);
+    textSize(20);
     line(first.position.x, first.position.y, second.position.x, second.position.y);
     
     if ( ui.showWeights ) {

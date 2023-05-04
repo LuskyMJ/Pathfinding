@@ -1,7 +1,7 @@
 class Node {
   int key;
   PVector position;
-  ArrayList<Path> neighbours = new ArrayList<Path>();
+  ArrayList<Path> neighbours = new ArrayList<Path>(); 
   
   color nodeColor = #4269f5;
   
@@ -53,12 +53,8 @@ class Node {
     // Copying
     ArrayList<Node> checkedNodesCopy = new ArrayList<Node>();
     for (int i = 0; i < checkedNodes.size(); i++) {
-      checkedNodesCopy.add(checkedNodes.get(i));
-    }
-    
-    // WARNING THIS COULD BE INTEGRATED WITH THE LOOP ABOVE
-    for (int i = 0; i < checkedNodesCopy.size(); i++) {
-      if (checkedNodesCopy.get(i) == this) return;
+      if (checkedNodes.get(i) == this) return;
+      else checkedNodesCopy.add(checkedNodes.get(i));
     }
     
     checkedNodesCopy.add(this);

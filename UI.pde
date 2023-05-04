@@ -1,4 +1,4 @@
-class UI {
+  class UI {
   int currentTool = 0;
   Node selectedNode, sourceNode, targetNode;
   int buttonHeight = 100;
@@ -7,9 +7,9 @@ class UI {
   int textSize = 20;
   String currentWeight = "1";
   boolean selectingWeight;
-  float borderRadius = 10;
+  float borderRadius = 10f;
   int selectedAlgorithm = 0;
-  int currentPath = 0; // WARNING DO NOT CHANGE THIS IF THERE ISN'T ANY PATHS
+  int currentPath = 0;
   
   void show() {
     noStroke();
@@ -79,8 +79,6 @@ class UI {
         if ( currentTool == 0 ) selectedNode = nodes.get( nearestNode );
         
         else if ( currentTool == 1 && nodes.get( nearestNode ) != selectedNode ) {
-          
-          // WARNING: CHECK WHETHER THERE IS NO SELECTED NODE
           if ( !selectedNode.hasNeighbour(nodes.get(nearestNode)) ) {    
             if ( ui.showWeights ) selectingWeight = true;
             paths.add( new Path(selectedNode, nodes.get( nearestNode ), 1f) );
@@ -118,7 +116,6 @@ class UI {
     // 40 = down
     
     int number = pressed - 48;
-    //println(altPressed);
     
     if (selectingWeight) {
       if ( number >= 0 && number <= 9 ) {
@@ -142,39 +139,43 @@ class UI {
       }
     }
     
-    // WARNING CHECK WHETHER THERE IS SOURCE AND? TARGET NODE + CHECK WHICH FUNCTION TO RUN
     else if (pressed == 114) {
       currentPath = 0;
       possiblePaths.clear();
       
       // Source-target algorithm
       if (selectedAlgorithm == 0) {
-        sourceNode.shortestSourceTarget(targetNode, new ArrayList<Node>(), new ArrayList<Path>());
-        fillPossiblePathLengths();
-        sortPaths();
+        if (sourceNode != null && targetNode != null) {
+          sourceNode.shortestSourceTarget(targetNode, new ArrayList<Node>(), new ArrayList<Path>());
+          fillPossiblePathLengths();
+          sortPaths();
+        }
+        
+        warnings.add(new Warning("Source or target node missing", 3000));
       }
       
       // Single-source alogrithm
       else if (selectedAlgorithm == 1) {
-        ArrayList<Path[]> tempPossiblePaths = new ArrayList<Path[]>(); // WARNING COULD JUST BE A NORMAL ARRAY
-        
-        for (Node node : nodes) {
-          if (node != sourceNode) {
-            possiblePaths.clear();
-            sourceNode.shortestSourceTarget(node, new ArrayList<Node>() {}, new ArrayList<Path>());
-            possiblePathLengths = new float[possiblePaths.size()];
-            fillPossiblePathLengths();
-            sortPaths();
-            tempPossiblePaths.add(possiblePaths.get(0));
+        if (sourceNode != null) {
+          ArrayList<Path[]> tempPossiblePaths = new ArrayList<Path[]>();
+          for (Node node : nodes) {
+            if (node != sourceNode) {
+              possiblePaths.clear();
+              sourceNode.shortestSourceTarget(node, new ArrayList<Node>() {}, new ArrayList<Path>());
+              possiblePathLengths = new float[possiblePaths.size()];
+              fillPossiblePathLengths();
+              sortPaths();
+              tempPossiblePaths.add(possiblePaths.get(0));
+            }
           }
+          possiblePaths = tempPossiblePaths;
+          fillPossiblePathLengths();
         }
-        possiblePaths = tempPossiblePaths;
-        fillPossiblePathLengths();
+        else warnings.add(new Warning("No source node", 3000));
       }
       
     }
     
-    // WARNING CHECK WHETHER THERE IS A PATH
     if (altPressed == 38) {
       if (currentPath < possiblePaths.size() - 1) currentPath++;
     }

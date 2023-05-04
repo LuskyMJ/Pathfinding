@@ -1,5 +1,3 @@
-Node node;
-Node node2;
 ArrayList<Node> checkedNodes = new ArrayList<Node>();
 ArrayList<Node> nodes = new ArrayList<Node>();
 ArrayList<Path> paths = new ArrayList<Path>();
@@ -13,7 +11,7 @@ float[] possiblePathLengths;
 // For drawing the path
 Path[] selectedPath = new Path[0];
 
-void setup() {
+void setup() {  
   fullScreen();
   textAlign(CENTER, CENTER);
 }
@@ -30,7 +28,7 @@ void draw() {
   int removed = 0;
   for (int i = 0; i < warnings.size(); i++) {
     int index = i - removed;
-    if (index == warnings.size() - 1) break;
+    if (index == warnings.size()) break;
     if ( warnings.get(index).done ) {
       warnings.remove(index);
       removed++;
@@ -39,7 +37,6 @@ void draw() {
     else warnings.get(i).show();
   }
  
-  // WARNING MOVE THIS SOMEWHERE ELSE
   if (ui.currentPath >= 0 && ui.currentPath < possiblePaths.size()) selectedPath = possiblePaths.get(ui.currentPath);
 }
 
@@ -56,8 +53,6 @@ void keyPressed() {
   else if (keyCode == 83) saveData();
   
   ui.keyPressed( (int)key, (int)keyCode );
-  
-  //println(keyCode);
 }
 
 void mouseClicked() {
@@ -175,7 +170,3 @@ void printPath(Path[] path) {
   }
   println();
 }
-
-// TBM
-// No selected node if you load nodes
-// WARNING LOADING AFTER PATH IS FOUND WILL BUG COMPLETELY
